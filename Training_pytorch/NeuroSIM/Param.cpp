@@ -157,7 +157,7 @@ Param::Param() {
 	widthInFeatureSizeCrossbar = 2;     // Crossbar Cell width in feature size
 	
 	resistanceOn = 9.1243e6;               // Ron resistance at Vr in the reported measurement data (need to recalculate below if considering the nonlinearity)
-	resistanceOff = 5301e9;           // Roff resistance at Vr in the reported measurement dat (need to recalculate below if considering the nonlinearity)
+	resistanceOff = 0.5301e9;           // Roff resistance at Vr in the reported measurement dat (need to recalculate below if considering the nonlinearity)
 	maxConductance = (double) 1/resistanceOn;
 	minConductance = (double) 1/resistanceOff;
 	gateCapFeFET = 2.1717e-18;	        // Gate capacitance of FeFET (F)
