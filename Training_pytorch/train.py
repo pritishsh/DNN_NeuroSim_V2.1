@@ -41,22 +41,22 @@ parser.add_argument('--t', default=0)
 parser.add_argument('--v', default=0)
 parser.add_argument('--detect', default=0)
 parser.add_argument('--target', default=0)
-parser.add_argument('--nonlinearityLTP', default=0.01)
-parser.add_argument('--nonlinearityLTD', default=-0.01)
-parser.add_argument('--max_level', default=100)
+parser.add_argument('--nonlinearityLTP', default=0.8252)
+parser.add_argument('--nonlinearityLTD', default=-1.1357)
+parser.add_argument('--max_level', default=60)
 parser.add_argument('--d2dVari', default=0)
-parser.add_argument('--c2cVari', default=0)
+parser.add_argument('--c2cVari', default=0.005)
 current_time = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 
 args = parser.parse_args()
 args.wl_weight = 5            # weight precision
 args.wl_grad = 5              # gradient precision
 args.cellBit = 5              # cell precision (in V2.0, we only support one-cell-per-synapse, i.e. cellBit==wl_weight==wl_grad)
-args.max_level = 32           # Maximum number of conductance states during weight update (floor(log2(max_level))=cellBit) 
-args.c2cVari = 0.003          # cycle-to-cycle variation
+args.max_level = 60           # Maximum number of conductance states during weight update (floor(log2(max_level))=cellBit) 
+args.c2cVari = 0.005          # cycle-to-cycle variation
 args.d2dVari = 0.0            # device-to-device variation
-args.nonlinearityLTP = 1.75   # nonlinearity in LTP
-args.nonlinearityLTD = 1.46   # nonlinearity in LTD (negative if LTP and LTD are asymmetric)
+args.nonlinearityLTP = 0.8252   # nonlinearity in LTP
+args.nonlinearityLTD = 1.1357   # nonlinearity in LTD (negative if LTP and LTD are asymmetric)
 
 # momentum
 gamma = 0.9
