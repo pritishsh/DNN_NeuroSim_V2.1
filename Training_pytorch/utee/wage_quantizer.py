@@ -14,7 +14,10 @@ def S(bits):
     return 2.**(bits-1)
 
 def SR(x):
-    r = torch.cuda.FloatTensor(*x.size()).uniform_()
+    # original line:
+    #r = torch.cuda.FloatTensor(*x.size()).uniform_()
+    # modified line:
+    r = torch.FloatTensor(*x.size()).uniform_()
     return torch.floor(x+r)
 
 def C(x, bits):
