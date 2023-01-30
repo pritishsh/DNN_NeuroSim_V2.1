@@ -20,7 +20,7 @@ from modules.quantization_cpu_np_infer import QConv2d,QLinear
 parser = argparse.ArgumentParser(description='PyTorch CIFAR-X Example')
 parser.add_argument('--type', default='cifar10', help='dataset for training')
 parser.add_argument('--batch_size', type=int, default=200, help='input batch size for training (default: 64)')
-parser.add_argument('--epochs', type=int, default=257, help='number of epochs to train (default: 10)')
+parser.add_argument('--epochs', type=int, default=500, help='number of epochs to train (default: 10)')
 parser.add_argument('--grad_scale', type=float, default=1, help='learning rate for wage delta calculation')
 parser.add_argument('--seed', type=int, default=117, help='random seed (default: 1)')
 parser.add_argument('--log_interval', type=int, default=100,  help='how many batches to wait before logging training status')
@@ -56,7 +56,7 @@ args.max_level = 60           # Maximum number of conductance states during weig
 args.c2cVari = 0.005          # cycle-to-cycle variation
 args.d2dVari = 0.0            # device-to-device variation
 args.nonlinearityLTP = 0.8252   # nonlinearity in LTP
-args.nonlinearityLTD = 1.1357   # nonlinearity in LTD (negative if LTP and LTD are asymmetric)
+args.nonlinearityLTD = -1.1357   # nonlinearity in LTD (negative if LTP and LTD are asymmetric)
 
 # momentum
 gamma = 0.9
@@ -97,17 +97,17 @@ for k, v in args.__dict__.items():
 logger("========================================")
 
 # seed
-args.cuda = torch.cuda.is_available()
+#args.cuda = torch.cuda.is_available()
 torch.manual_seed(args.seed)
-if args.cuda:
-    torch.cuda.manual_seed(args.seed)
+#if args.cuda:
+#    torch.cuda.manual_seed(args.seed)
 
 # data loader and model
 assert args.type in ['cifar10', 'cifar100'], args.type
 train_loader, test_loader = dataset.get10(batch_size=args.batch_size, num_workers=1)
 model = model.cifar10(args = args, logger=logger)
-if args.cuda:
-    model.cuda()
+#if args.cuda:
+#    model.cuda()
 
 optimizer = optim.SGD(model.parameters(), lr=1)
 
@@ -148,8 +148,8 @@ try:
         logger("training phase")
         for batch_idx, (data, target) in enumerate(train_loader):
             indx_target = target.clone()
-            if args.cuda:
-                data, target = data.cuda(), target.cuda()
+            #if args.cuda:
+            #    data, target = data.cuda(), target.cuda()
             data, target = Variable(data), Variable(target)
             optimizer.zero_grad()
             output = model(data)
@@ -162,7 +162,7 @@ try:
                 velocity[j] = gamma * velocity[j] + alpha * param.grad.data
                 param.grad.data = velocity[j]
                 param.grad.data = wage_quantizer.QG(param.data,args.wl_weight,param.grad.data,args.wl_grad,grad_scale,
-                            torch.from_numpy(paramALTP[j]).cuda(), torch.from_numpy(paramALTD[j]).cuda(), args.max_level, args.max_level)
+                            torch.from_numpy(paramALTP[j]), torch.from_numpy(paramALTD[j]), args.max_level, args.max_level)
                 j=j+1
 
             optimizer.step()
@@ -238,8 +238,8 @@ try:
                 if i==0:
                     hook_handle_list = hook.hardware_evaluation(model,args.wl_weight,args.wl_activate,epoch)
                 indx_target = target.clone()
-                if args.cuda:
-                    data, target = data.cuda(), target.cuda()
+                #if args.cuda:
+                #    data, target = data.cuda(), target.cuda()
                 with torch.no_grad():
                     data, target = Variable(data), Variable(target)
                     output = model(data)
